@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Camera</title>
+	<link href="https://vjs.zencdn.net/8.16.1/video-js.css" rel="stylesheet" />
+	<script src="./js.js"></script>
+</head>
+<style>
+	*{
+		background-color: darkblue;
+		color: yellow;
+		border-radius: 4px;
+		font-size: large;
+		
+		
+	}
+	.PLCTL{
+		width: 100%;
+		height: fit-content;
+	}
+	.PLCTh{
+		width: 100%;
+		height: fit-content;
+	}
+	.PLDIV{
+		width: fit-content;
+		padding: 0%;
+		margin-inline: auto;
+		margin-top: 5px;
+		
+	}
+	.VPBT{
+		padding: 0%;
+	}
+	p{
+		margin: 5px;
+	}
+</style>
+
+<body>
+	<h1>Skibidi Air conditioner and camera thingy</h1>
+	<h2 id="acstat">AC off</h2>
+	<button onclick="ac(true)" id="acctlon">AC on</button>
+	
+	<button onclick="ac(false)" id="acctloff">AC off</button>
+	<br>
+	<div style="width: 25%; float: inline-start; background-color: darkgoldenrod;">
+		
+		<div class="PLDIV"><button class="PLCTL" onclick="platdrv('w')" id="acctlon">w</button></div>
+		
+		
+		<div class="PLDIV">
+			<button class="PLCTLh" onclick="platdrv('a')" id="acctlon">a</button>
+			<button class="PLCTLh" onclick="platdrv('l')" id="acctlon">_l_</button>
+			<button class="PLCTLh" onclick="platdrv('d')" id="acctlon">d</button>
+			
+		</div>
+		
+		
+		
+		<div class="PLDIV"><button class="PLCTL" onclick="platdrv('s')" id="acctlon">s</button></div>
+		
+		
+	</div>
+	<p>press image to refresh</p>
+	<input type="range" name="sus" id="DELSEL" value="500" min="200" max="1200" onchange="rangOnchg()">
+	<br>
+	<input type="range" name="qual" id="QSEL" value="50" min="10" max="90" onchange="rangeOnchg_q()">
+	<p id="REFD">refresh off</p>
+	
+	<button class="VPBT" onclick="imgdvr()" id="imgref"><img src="kaka.jpg" alt="Z.jpg" id="ZJPG" style="width: 90%; aspect-ratio: 1.333;"></button>
+	
+	
+</body>
+</html>
+         
