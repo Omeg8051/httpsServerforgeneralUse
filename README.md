@@ -7,6 +7,7 @@ How to get it to work?
 
 <p>before we start</p>
 <h1>!!DO NOT PUBLISH THE KEY AND CHAIN FILES TO GIT HUB!!</h1>
+<h2>Put the key and chain somethere else. And specify it in the parameter.</h2>
 
 <p>Ok, with that out of the way. let's begin.</p>
 
