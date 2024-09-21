@@ -17,6 +17,10 @@ const char *_HTTPS_INTERNAL_respond_404 = "HTTP/1.0 404 NOT FOUND\r\nServer: Mys
 
 const char *_HTTPS_INTERNAL_respond_POST = "HTTP/1.0 200 OK\r\nServer: MyserverWithC\r\nDate: Tue, 03 Sep 2024 09:30:45 GMT\r\nContent-type: text/plain; charset=utf-8\r\nContent-Length: 0\r\n\r\n";
 
+const char *_HTTPS_INTERNAL_respond_TPOT = "HTTP/1.0 418 I AM A TEA POT\r\nServer: MyserverWithC\r\nDate: Tue, 03 Sep 2024 09:30:45 GMT\r\nContent-type: text/plain; charset=utf-8\r\nContent-Length: 0\r\n\r\n";
+
+
+
 
 //hardware info:
 //default paths:
@@ -41,18 +45,6 @@ int _HTTPS_INTERNAL_optval = 1;
 sockaddr_in _HTTPS_INTERNAL_clients[CLI_MAX];
 int _HTTPS_INTERNAL_clilst[CLI_MAX][2];//{{fd,opflag},{fd,opflag},...}
 //opflag:{xxxx,{hwREQ},threadSync}
-/*
-	hwREQ:
-	0:nop
-	1:ACoff
-	2:ACon
-	3:w
-	4:s
-	5:a
-	6:d
-	7:l
-	
-*/
 
 
 extern SSL_CTX *create_context()
@@ -209,34 +201,9 @@ extern void* netFuncCli(void* ctlhandle){
 	
 		
 	while(_HTTPS_INTERNAL_netalife && localEnd){
-		//int lenrd = read(ctlh[0],buffer[cliIdx],1024);
 		
 		int lenrd = SSL_read(ssl,_HTTPS_INTERNAL_buffer[cliIdx],1024);
 		int lenwr = 0;
-		//printf("%d\n",errno);
-		/*if(((millis() - tftm[0]) > tftm[1]) && tff){
-			//tfi = 300;
-			while((locolkfrm == lkfrm))usleep(1000);
-			printf("tf%d\n",millis() - tftm[0]);
-			tftm[0] = millis();
-			locolkfrm = lkfrm;
-			int fsize = jpg.size();
-			int hsize = sprintf(headerBuffer[cliIdx],mjpeg_sepe,fsize);
-			//lenwr = send(ctlh[0],headerBuffer[cliIdx],hsize,0);
-			lenwr = SSL_write(ssl,headerBuffer[cliIdx],hsize);
-			unsigned char *c = jpg.data();
-			lenwr += SSL_write(ssl,c,fsize);
-			
-			//for(int i = 0;i<fsize;i++){
-				
-				//lenwr += send(ctlh[0],c+i,1,0);
-				
-				
-			//}
-
-			//release held main thread
-					
-		}*/
 		_HTTPS_INTERNAL_randFtag = micros();
 		if(lenrd == -1 && (errno == SSL_ERROR_NONE || errno == EWOULDBLOCK || errno == SSL_ERROR_WANT_READ))continue;
 		if(lenrd == 0)break;
@@ -244,10 +211,7 @@ extern void* netFuncCli(void* ctlhandle){
 		_HTTPS_INTERNAL_buffer[cliIdx][lenrd] = 0;
 		char *plbuffer;
 		
-		//printf("============\n%s=============\n%d\n",buffer[cliIdx],lenrd);
-		//printf("=============\n%d\n",lenrd);
 		int ff = fcntl(ctlh[0],F_GETFL);
-		//printf("\t\t[FDCH]fdlend:%x\n",ff);
 		fcntl(ctlh[0],F_SETFL,ff & ~O_NONBLOCK);
 		
 		switch (_HTTPS_INTERNAL_buffer[cliIdx][0])
@@ -256,7 +220,6 @@ extern void* netFuncCli(void* ctlhandle){
 				if(_HTTPS_INTERNAL_buffer[cliIdx][4]=='/'){
 					if(_HTTPS_INTERNAL_buffer[cliIdx][5]==' '){
 						//transfer index
-						//printf("OPEN <index.html>\n");
 						int lol = open("index.html",O_RDONLY);
 	
 						if(lol > 0){
@@ -319,11 +282,11 @@ extern void* netFuncCli(void* ctlhandle){
 						int lol = ifyouwanttofuckme(_HTTPS_INTERNAL_buffer[cliIdx] + 5, strrl - 3) * -1;
 
 						if(lol != -1){
-						
+							
 							lol = open(_HTTPS_INTERNAL_buffer[cliIdx]+5,O_RDONLY);
 						}
 						else {
-							printf("no going up allowed!!\n");
+							printf(ANSI_COLOR_RED "[ERROR]no going up allowed!!\n" ANSI_COLOR_RESET);
 
 						}
 					
@@ -334,7 +297,6 @@ extern void* netFuncCli(void* ctlhandle){
 							int hsize = sprintf(_HTTPS_INTERNAL_headerBuffer[cliIdx],_HTTPS_INTERNAL_respond_lol,fsize,_HTTPS_INTERNAL_randFtag);
 							printf("filesize:%d\n",fsize);
 						
-							//lenwr = send(ctlh[0],headerBuffer[cliIdx],hsize,0);
 							lenwr = SSL_write(ssl,_HTTPS_INTERNAL_headerBuffer[cliIdx],hsize);
 							
 
@@ -343,7 +305,6 @@ extern void* netFuncCli(void* ctlhandle){
 								int trsz= (i<DOC_TRANS_CHUNK)?i:DOC_TRANS_CHUNK;
 
 								read(lol,_HTTPS_INTERNAL_headerBuffer[cliIdx],trsz);
-								//lenwr += send(ctlh[0],&c,1,0);
 								int twr = SSL_write(ssl,_HTTPS_INTERNAL_headerBuffer[cliIdx],trsz);
 								if(twr < 0){
 									printf(ANSI_COLOR_RED "[ERROR]send error:<%d>\n" ANSI_COLOR_RESET,errno);
@@ -356,7 +317,6 @@ extern void* netFuncCli(void* ctlhandle){
 
 						} else {
 							//transfer 404
-							//lenwr = send(ctlh[0],respond_404,146,0);
 							lenwr = SSL_write(ssl,_HTTPS_INTERNAL_respond_404,146);
 						
 						}
@@ -376,12 +336,30 @@ extern void* netFuncCli(void* ctlhandle){
 				while(_HTTPS_INTERNAL_buffer[cliIdx][plidx] != '#' && (plidx < 1024)){
 					plidx++;
 				}
-				plbuffer = _HTTPS_INTERNAL_buffer[cliIdx]+plidx;
-			
 
-				ctlh[1] = 0;
+				//potential illegal plbuffer if there is no '#' present 
+				if(plidx < 1024) plbuffer = _HTTPS_INTERNAL_buffer[cliIdx]+plidx;
+				else plbuffer = _HTTPS_INTERNAL_buffer[cliIdx];
+
+				/*
+				add code to process post request buffer here;
+					plbuffer: the pointer at '#' as the recommanded payload initiallizer.
+				*/
+
 				break;
+
+			/*
+			add support for more request type
+
+			*/
 			default:
+				//unsupported request.
+
+				//int hsize = sprintf(_HTTPS_INTERNAL_headerBuffer[cliIdx],_HTTPS_INTERNAL_respond_TPOT);
+				//lenwr = send(ctlh[0],headerBuffer[cliIdx],hsize,0);
+				lenwr = SSL_write(ssl,_HTTPS_INTERNAL_respond_TPOT,151);
+						
+							
 				break;
 			}
 		printf("total Written: %d bytes\n",lenwr);

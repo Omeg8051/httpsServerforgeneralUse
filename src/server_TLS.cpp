@@ -44,6 +44,8 @@ int (*clilst)[2];
 
 SSL_CTX *ctx;
 
+
+//trigger quit when signal INT
 void sigInt(int){
 	printf("terminated from SIGTERM\n");
 	e = 'q';
