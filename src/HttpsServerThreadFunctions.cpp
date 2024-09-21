@@ -194,7 +194,7 @@ extern void* netFuncCli(void* ctlhandle){
 
 	if (SSL_accept(ssl) <= 0) {
 		ERR_print_errors_fp(stdout);
-		//localEnd = 0;
+		localEnd = 0;
 		printf(ANSI_COLOR_RED "[ERROR]SSL accept failed:%d\n" ANSI_COLOR_RESET,errno);
 	} else {
 		printf(ANSI_COLOR_YELLOW "[INFO]SSL accept succi\n" ANSI_COLOR_RESET);
